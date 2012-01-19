@@ -33,7 +33,7 @@
            [:button#uuid-b "Go"]]]
          [:div#sr-ordre-kid
           [:div#toolbar-kid {:class "ui-widget-header ui-corner-all"}
-           [:label {:for "kid"}]
+           [:label {:for "kid"} "KUNDE ID: "]
            [:input#kid {:type "text" :value "600575901"}]
            [:button#kid-b "Go"]]]]]
        

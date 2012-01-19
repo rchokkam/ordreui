@@ -84,7 +84,7 @@ div#whosUsing {
 
 /*content*/
 #content {
-	padding: 2em 20px;
+	padding: 1em 10px;
 	border: 0 solid #000;
 	/* Fallback for web browsers that doesn't support RGBa */
 	background: rgb(0, 0, 0);
@@ -205,22 +205,22 @@ div.gettingStarted, div.devResources {
 
 #primaryContent {
 	position: relative;
-	float: right;
-	display: inline;
-	width: 744px;
+	/*float: right;*/
+	/*display: inline;*/
+	width: 972px;
 	background: #fafafa;
 	border: 1px solid #aaa;
-	padding: 5px 15px 15px;
+	padding: 15px 15px 15px;
 	color: #222;
 	min-height: 500px;
 	-moz-border-radius: .5em; /* gecko */
-	  -webkit-border-radius: .5em; /* webkit */
-	  border-radius: .5em; /* w3 */
-	  overflow: visible;
+	-webkit-border-radius: .5em; /* webkit */
+	border-radius: .5em; /* w3 */
+	overflow: visible;
 }
 #primaryContent .post {
     margin-bottom: 2.5em;
-      padding-bottom: 2.5em;
+    padding-bottom: 2.5em;
     border-bottom: 1px dotted #ccc;
 }
 #primaryContent code {
