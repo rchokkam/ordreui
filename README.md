@@ -1,13 +1,17 @@
-# ordreui
+# Ordre UI
 
-A website written in noir. 
+A ordre user interface website written in noir. 
 
 ## Usage
 
 ```bash
 lein deps
 lein run
-```
+
+## Interactive Development
+```bash
+lein deps
+lein ring server
 
 ## License
 
