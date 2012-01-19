@@ -1,0 +1,11 @@
+*.*~
+pom.xml
+build.sh
+*jar
+/lib/
+/classes/
+.lein-failures
+.lein-deps-sum
+*.clj~
+*#*.clj*
+.#*.clj

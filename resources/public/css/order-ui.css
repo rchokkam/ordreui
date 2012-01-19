@@ -1,0 +1,68 @@
+/*order ui css*/
+#request {
+	margin: 5px;
+}
+
+#response {
+	margin: 5px;
+	/*display: none;*/
+}
+
+#toolbar-uuid {
+  padding: 5px;
+}
+
+#toolbar-kid {
+  padding: 10px;
+}
+
+#uuid {
+	width: 300px;
+	height: 20px;
+}
+
+#kid {
+	width: 300px;
+	height: 20px;	
+}
+
+#sr-ordre-uuid {
+	float:left;
+	width:330px;
+}
+
+#sr.ordre-kid {
+	float:right;
+	width:330px;
+}
+
+.stylecls
+{
+border-collapse:collapse;
+}
+
+.stylecls, .styletd
+{
+border:1px solid #D9DBDF;
+padding:7px;
+}
+
+.stylehd {
+	border:1px solid #D9DBDF;
+	padding:7px;
+	font-weight: bold;
+	background-color: #cccccc;
+}
+
+.styleth {
+	border:1px solid #D9DBDF;
+	background: #F6A828;
+	padding:7px;
+	color: #1C94C4;
+}
+
+.steplink {
+	text-decoration: underline;
+	color: #1C94C4;
+	cursor: pointer;
+}
