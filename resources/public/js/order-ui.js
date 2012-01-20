@@ -2,7 +2,7 @@
 
 /* Global variables*/
 var accept_header = 'application/vnd.yousee.kasia2+json;charset=UTF-8;version=1',
-	jq_grid_width_1 = 708,jq_grid_width_2 = 658,map,marker;
+	jq_grid_width_1 = 936,jq_grid_width_2 = 886,jq_grid_width_3 = 920,map,marker;
 
 $(function(){
 
@@ -25,7 +25,11 @@ $(function(){
 	$('button').button();	
 
 	$('#uuid-b').click(function(){
-		handle_button_click();
+		handle_uuid_button_click();
+	}); 
+
+	$('#kid-b').click(function(){
+		handle_kid_button_click();
 	}); 
 
 	// handle enter key for request
@@ -40,7 +44,8 @@ $(function(){
 /**
  * Function to handle Go button.
  **/
-var handle_button_click=function() {
+var handle_uuid_button_click=function() {
+	$("#kunde-search-orders").empty();	
 	$("#ou-tabs").hide();
 	// Get uuid
 	var uuid = $("#uuid").attr('value');	
@@ -57,6 +62,89 @@ var handle_button_click=function() {
 	$("#ou-a-tab-1").trigger('click');
 };
 /**
+ * Function to handle Go button.
+ **/
+var handle_kid_button_click=function() {
+	$("#ou-tabs").hide();
+	// Get uuid
+	var kid = $("#kid").attr('value');	
+	$('body').css('cursor','wait');	
+	try{
+		// invoke the web service
+		process_orders_by_kunde(kid);						
+	}catch(err){
+		console.log(err);
+		display_error_msg(err);			
+	}
+	$('body').css('cursor','auto');
+
+	$("#ou-a-tab-1").trigger('click');
+};
+/**
+ *
+ **/
+var process_orders_by_kunde = function(kid) {
+	var ruri = '/ordreui/kunde/' + kid;
+ 	$.ajax({
+ 		url: ruri,
+		processData:false,
+		type: 'GET',
+		beforeSend:function(jqXHR, settings){			
+			jqXHR.setRequestHeader("Accept", accept_header);
+			jqXHR.setRequestHeader("Content-Type", accept_header);			
+			$('body').css('cursor','wait');				
+		},
+		success: function(data, textStatus, jqXHR){						
+			// Render kunde information
+			render_orders_by_kunde(data);					
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			//alert('Error process_order_by_kunde_id');	
+			$('#kunde-orders').empty();
+			display_error_msg(errorThrown);			
+		},
+		complete: function(jqXHR,textStatus){	
+			$('body').css('cursor','auto');		
+		}						
+	});
+ };
+/**
+ *
+ **/
+var render_orders_by_kunde = function(korders){
+	$("#kunde-search-orders").empty();	
+
+	if(korders == undefined || korders == null){
+		return;
+	}
+
+	$("#kunde-search-orders").html(
+		get_html_by_template('/ordreui/js/ejs/ksorders.js',korders)
+	);
+
+	$("#kundeSearchOrderGrid").jqGrid({				
+  		datatype: "local",  				  		
+    	colNames:['UUID','Ordredato', 'Status', 'Salgskanal'],
+    	colModel:[
+    		{name:'uuid',index:'uuid',width:'280px',sorttype:"string",formatter:format_order_uuid},
+    		{name:'ordredato',index:'ordredato'},
+    		{name:'status',index:'status'},
+    		{name:'salgskanal',index:'salgskanal'}      
+    	],
+    	rowNum:10,
+	   	rowList:[10,20,30],
+    	pager: '#kso-pager',
+    	viewrecords: true,
+    	multiselect: false,
+    	caption: "Ordre by kunde",    	
+    	width: jq_grid_width_3
+	}).navGrid('#kso-pager',{edit:false,add:false,del:false});
+
+	$.each(korders,function(i,order){
+		$("#kundeSearchOrderGrid").jqGrid('addRowData',i+1,order);				
+	});
+};
+/**
  * Replacer callback function for JSON.stringnify.
  */
 var replacer_ou=function(key, value) {
@@ -66,7 +154,7 @@ var replacer_ou=function(key, value) {
  * Process order by uuid.
  **/
 var process_order_by_uuid = function(uuid) {
-	var ruri = '/ordre-v1/' + uuid;
+	var ruri = '/ordreui/uuid/' + uuid;
  	$.ajax({
  		url: ruri,
 		processData:false,
@@ -89,7 +177,7 @@ var process_order_by_uuid = function(uuid) {
 
 			// Render order details
 			$("#ou-ordre").html(
-				get_html_by_template('js/ejs/ordre.js',data)
+				get_html_by_template('/ordreui/js/ejs/ordre.js',data)
 			);
 			
 			$('#order-detail-acrdion').accordion({
@@ -106,7 +194,7 @@ var process_order_by_uuid = function(uuid) {
 
 			// Render kunde information
 			$("#ou-kunde").html(
-				get_html_by_template('js/ejs/kunde.js',kundeData)
+				get_html_by_template('/ordreui/js/ejs/kunde.js',kundeData)
 			);
 			
 			// Render Aftaler
@@ -140,7 +228,7 @@ var process_order_by_uuid = function(uuid) {
  * Return the kunde id
  **/
 var process_order_by_kunde_id = function(kid) {
-	var ruri = '/ordre-v1/' + kid;
+	var ruri = '/ordreui/kunde/' + kid;
  	$.ajax({
  		url: ruri,
 		processData:false,
@@ -183,7 +271,7 @@ var process_order_by_kunde_id = function(kid) {
 		success: function(data, textStatus, jqXHR){						
 
 			$("#ou-address").html(
-				get_html_by_template('js/ejs/adresse.js',data)
+				get_html_by_template('/ordreui/js/ejs/adresse.js',data)
 			);
 
 			var myLatlng = new google.maps.LatLng(parseFloat(data.latitude), parseFloat(data.longitude));
@@ -232,7 +320,7 @@ var render_order_steps = function(steps){
 	}
 	// TODO - for simple html replace $.get to get the html content.
 	$("#ou-steps").html(
-		get_html_by_template('js/ejs/steps.js',steps)
+		get_html_by_template('/ordreui/js/ejs/steps.js',steps)
 	);
 
 	$("#orderStepsGrid").jqGrid({				
@@ -278,7 +366,7 @@ var render_kunde_orders = function(korders) {
 	}
 
 	$("#kunde-orders").html(
-		get_html_by_template('js/ejs/korders.js',korders)
+		get_html_by_template('/ordreui/js/ejs/korders.js',korders)
 	);
 
 	$("#kundeOrderGrid").jqGrid({				
@@ -331,7 +419,7 @@ var render_order_aftaler = function(aftaler){
 			aftalenr_caption = aftal.aftaletype + ' &gt;&gt; ' + aftal.aftalenr;
 
 		$("#order-aftaler").append(
-			get_html_by_template('js/ejs/aftaler.js',aftal)
+			get_html_by_template('/ordreui/js/ejs/aftaler.js',aftal)
 		);	
 				
 		$(aftalenr).jqGrid({				
@@ -373,7 +461,7 @@ var render_order_valgt = function(valgts){
 			valgt_aftalenr_caption = valgt.aftaletype + ' &gt;&gt; ' + valgt.aftalenr;
 
 		$('#order-valgt').append(
-			get_html_by_template('js/ejs/valgt.js',valgt)
+			get_html_by_template('/ordreui/js/ejs/valgt.js',valgt)
 		);		
 			
 		$(valgt_aftalenr).jqGrid({				
@@ -416,7 +504,7 @@ var render_order_opsagt = function(opsagts){
 			opsagt_aftalenr_caption = opsagt.aftaletype + ' &gt;&gt; ' + opsagt.aftalenr;
 
 		$("#order-opsagt").append(
-			get_html_by_template('js/ejs/opsagt.js',opsagt)
+			get_html_by_template('/ordreui/js/ejs/opsagt.js',opsagt)
 		);	
 				
 		$(opsagt_aftalenr).jqGrid({				
@@ -463,7 +551,7 @@ var traverse_ou = function(key, jsonObj) {
         $.each(jsonObj, function(k,v) {             
             if( v != null && typeof v == "object" ){
             	gstr += '<li class="closed"><span class="folder">' + k + '</span><ul>'	
-            	traverse(k, v); 
+            	traverse_ou(k, v); 
             	gstr += '</ul></li>';
             } else{
             	gstr += '<li><span class="file">' + k + ' :=> ' + v + '</span>'	

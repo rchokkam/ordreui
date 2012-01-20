@@ -1,10 +1,14 @@
 (ns ordreui.server
-  (:require [noir.server :as server]))
+  (:require [noir.server :as server]
+            [ordreui.views.common]
+            [ordreui.views.welcome]
+            [ordreui.views.routes]))
 
-(server/load-views "src/ordreui/views/")
+(server/load-views-ns 'orderui.views)
 
 (def handler (server/gen-handler {:mode :dev
-                                  :ns 'ordreui}))
+                                  :ns 'ordreui
+                                  :base-url "/ordreui"}))
 
 (defn -main [& m]
   (let [mode (keyword (or (first m) :dev))

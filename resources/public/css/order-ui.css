@@ -44,6 +44,10 @@
 	float: right;
 }
 
+#kunde-search-orders {
+	padding-top: 40px;
+}
+
 .stylecls {
 	border-collapse:collapse;
 }
